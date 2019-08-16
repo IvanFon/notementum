@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Callable, Dict
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 if TYPE_CHECKING:
     from .view_controller import ViewController
@@ -25,7 +25,14 @@ class MainWindow:
                 (lambda *a: self.controller.editor_undo()),
             'on_menu_item_redo_activate':
                 (lambda *a: self.controller.editor_redo()),
+            'on_win_main_key_press_event': self.on_win_main_key_press_event,
         }
 
     def on_menu_item_new_activate(self, *args) -> None:
         print('menu file new activated')
+
+    def on_win_main_key_press_event(self,
+                                    widget: Gtk.Widget,
+                                    event: Gdk.Event,
+                                    *args) -> None:
+        self.controller.key_pressed(event.keyval, event.state)

@@ -83,10 +83,12 @@ class SourceEditor:
             self.source_buffer.set_text('')
 
     def show_editor(self) -> None:
+        self.tool_edit.set_active(True)
         self.stack_editor.set_visible_child(
             self.stack_editor.get_children()[0])
 
     def show_preview(self, preview_content: str) -> None:
+        self.tool_edit.set_active(False)
         self.stack_editor.set_visible_child(
             self.stack_editor.get_children()[1])
         self.webview_preview.load_html(preview_content)
