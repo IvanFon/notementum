@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    body {
+      background-color: #404552;
+      color: #d3dae3;
+    }
+    table {
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: solid black 1px;
+    }
+
+    th {
+      text-align: center;
+    }
+
+    th, td {
+      padding: 6px 10px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #4b5160;
+    }
+  </style>
+</head>
+<body>
+  {{{CONTENT}}}
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [["$","$"], ["\\(","\\)"]],
+          processEscapes: true,
+          scale: 125,
+          minScaleAdjust: 100,
+      },
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
