@@ -15,7 +15,17 @@ from pygments.formatters.html import HtmlFormatter
 
 class NotementumRenderer(HTMLRenderer, LaTeXRenderer):
     # TODO: load from local file
-    mathjax_src = '<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>\n'
+    mathjax_src = '''<script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true,
+                scale: 125,
+                minScaleAdjust: 100,
+            },
+        });
+        </script>'''
+    mathjax_src += '<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>'
 
     formatter = HtmlFormatter()
     formatter.noclasses = True
@@ -28,7 +38,7 @@ class NotementumRenderer(HTMLRenderer, LaTeXRenderer):
         """
         Ensure Math tokens are all enclosed in two dollar signs.
         """
-        if token.content.startswith('$$'):
+        if token.content.startswith('$$') or token.content.startswith('$'):
             return self.render_raw_text(token)
         return '${}$'.format(self.render_raw_text(token))
 
@@ -50,8 +60,28 @@ def gen_preview(content: str) -> str:
                          background-color: #404552;
                          color: #d3dae3;
                        }
+table {
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: solid black 1px;
+}
+
+th {
+  text-align: center;
+}
+
+th, td {
+  padding: 6px 10px;
+}
+
+tr:nth-child(even) {
+  background-color: #4b5160;
+}
                      </style>'''
 
         preview += mistletoe.markdown(content, NotementumRenderer)
+        print(preview)
 
         return preview
