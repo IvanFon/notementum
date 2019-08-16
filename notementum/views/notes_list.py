@@ -16,8 +16,11 @@ class NotesList:
 
         self.tree_notes = builder.get_object('tree_notes')
         self.tree_selection_notes = builder.get_object('tree_selection_notes')
+        self.tree_filter_notes = builder.get_object('tree_filter_notes')
         self.store_notes = builder.get_object('store_notes')
         self.search_notes = builder.get_object('search_notes')
+
+        self.tree_filter_notes.set_visible_func(self.search_filter)
 
         self.search_notes.grab_focus()
 
@@ -42,6 +45,17 @@ class NotesList:
                 return
             note_iter = self.store_notes.iter_next(note_iter)
 
+    def search_filter(self, model, treeiter, data) -> bool:
+        search_text = self.search_notes.get_text()
+
+        if search_text == '':
+            return True
+
+        if search_text in model[treeiter][1]:
+            return True
+
+        return False
+
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_tree_selection_notes_changed':
@@ -63,7 +77,10 @@ class NotesList:
         self.controller.note_selected(model[treeiter][0])
 
     def on_search_notes_search_changed(self, *args) -> None:
-        print('search changed')
+        self.tree_filter_notes.refilter()
+
+        if self.search_notes.get_text() == '':
+            self.select_note(-1)
 
     def on_btn_new_clicked(self, *args) -> None:
         print('btn new clicked')

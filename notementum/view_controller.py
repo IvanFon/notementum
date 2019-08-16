@@ -47,15 +47,7 @@ class ViewController:
 
     def get_builder(self) -> Gtk.Builder:
         builder = Gtk.Builder()
-        builder.add_objects_from_file(
-            resource_filename('notementum', 'res/notes.ui'),
-            [
-                'win_main',
-                'store_notebooks',
-                'store_notes',
-                'dialog_assign_notebook',
-                'store_assign_notebooks',
-            ])
+        builder.add_from_file(resource_filename('notementum', 'res/notes.ui'))
         return builder
 
     def start(self) -> None:
