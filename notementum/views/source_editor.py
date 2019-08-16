@@ -14,6 +14,9 @@ class SourceEditor:
 
         self.source_edit = builder.get_object('source_edit')
         self.stack_save_status = builder.get_object('stack_save_status')
+        self.tool_edit = builder.get_object('tool_edit')
+        self.tool_notebook = builder.get_object('tool_notebook')
+        self.tool_delete = builder.get_object('tool_delete')
 
         self.set_loading_status(False)
 
@@ -44,8 +47,7 @@ class SourceEditor:
 
         self.set_loading_status(True)
         self.source_buffer.set_text(content)
-        self.source_edit.set_editable(True)
-        self.source_edit.set_cursor_visible(True)
+        self.set_editor_enabled(True)
         self.set_loading_status(False)
 
         self.loading_note = False
@@ -67,6 +69,16 @@ class SourceEditor:
     def redo(self) -> None:
         self.source_buffer.redo()
 
+    def set_editor_enabled(self, enabled: bool, clear: bool = False) -> None:
+        self.source_edit.set_editable(enabled)
+        self.source_edit.set_cursor_visible(enabled)
+        self.tool_edit.set_sensitive(enabled)
+        self.tool_notebook.set_sensitive(enabled)
+        self.tool_delete.set_sensitive(enabled)
+
+        if clear:
+            self.source_buffer.set_text('')
+
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_source_edit_destroy': (lambda *a: self.save_note(False)),
@@ -74,14 +86,13 @@ class SourceEditor:
             'on_tool_notebook_clicked': (
                 lambda *a: self.controller.show_assign_notebook_dialog()
             ),
-            'on_tool_delete_clicked': self.on_tool_delete_clicked,
+            'on_tool_delete_clicked': (
+                lambda *a: self.controller.delete_selected_note()
+            ),
         }
 
     def on_tool_edit_toggled(self, *args) -> None:
         print('edit tool toggled')
-
-    def on_tool_delete_clicked(self, *args) -> None:
-        print('delete tool clicked')
 
     def on_source_buffer_changed(self, *args) -> None:
         if self.loading_note:

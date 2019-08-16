@@ -28,6 +28,9 @@ class NotesList:
             self.store_notes.append([note.id, note.name])
 
     def select_note(self, note_id: int) -> None:
+        if self.store_notes.iter_n_children() == 0:
+            self.controller.disable_editor()
+
         if note_id == -1:
             self.tree_selection_notes.select_path(Gtk.TreePath(0))
             return

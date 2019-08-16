@@ -105,3 +105,10 @@ class Model:
                      WHERE id=?
                   ''', (notebook, note_id,))
         self.conn.commit()
+
+    def delete_note(self, note_id: int) -> None:
+        c = self.conn.cursor()
+        c.execute('''DELETE FROM notes
+                     WHERE id=?
+                  ''', (note_id,))
+        self.conn.commit()

@@ -1,4 +1,5 @@
 from itertools import chain
+from typing import List
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -60,10 +61,17 @@ class ViewController:
 
         Gtk.main()
 
-    def refresh_notebooks(self) -> None:
+    def refresh_notebooks(self) -> List[str]:
+        # displaying can mistakenly select a different notebook, save it
+        selected_notebook = self.model.selected_notebook
+
         notebooks = self.model.get_notebooks()
         self.notebook_list.display_notebooks(notebooks)
+
+        self.model.selected_notebook = selected_notebook
+
         self.notebook_list.select_notebook(self.model.selected_notebook)
+        return notebooks
 
     def notebook_selected(self, notebook: str) -> None:
         self.model.set_selected_notebook(notebook)
@@ -107,3 +115,16 @@ class ViewController:
             self.refresh_notebooks()
             self.notebook_list.select_notebook(notebook)
             self.notes_list.select_note(note_id)
+
+    def delete_selected_note(self) -> None:
+        self.model.delete_note(self.model.selected_note)
+        notebooks = self.refresh_notebooks()
+        if self.model.selected_notebook in notebooks:
+            self.notebook_list.select_notebook(self.model.selected_notebook)
+            self.notes_list.select_note(-1)
+        else:
+            self.notebook_list.select_notebook('All Notes')
+            self.notebook_selected('All Notes')
+
+    def disable_editor(self) -> None:
+        self.source_editor.set_editor_enabled(False, True)
