@@ -36,14 +36,18 @@ class SourceEditor:
             self.stack_save_status.set_visible_child(
                 self.stack_save_status.get_children()[1])
 
-    def display_content(self, content: str) -> None:
-        if content is None:
-            content = ''
-
+    def edit_note(self, content: str) -> None:
         self.loading_note = True
+
+        if self.save_timer is not None:
+            GLib.Source.remove(self.save_timer)
+
+        self.set_loading_status(True)
         self.source_buffer.set_text(content)
         self.source_edit.set_editable(True)
         self.source_edit.set_cursor_visible(True)
+        self.set_loading_status(False)
+
         self.loading_note = False
 
     def save_note(self, set_status: bool = True) -> None:
@@ -65,20 +69,16 @@ class SourceEditor:
 
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
-            'on_source_edit_destroy': self.on_source_edit_destroy,
+            'on_source_edit_destroy': (lambda *a: self.save_note(False)),
             'on_tool_edit_toggled': self.on_tool_edit_toggled,
-            'on_tool_notebook_clicked': self.on_tool_notebook_clicked,
+            'on_tool_notebook_clicked': (
+                lambda *a: self.controller.show_assign_notebook_dialog()
+            ),
             'on_tool_delete_clicked': self.on_tool_delete_clicked,
         }
 
-    def on_source_edit_destroy(self, *args) -> None:
-        self.save_note(False)
-
     def on_tool_edit_toggled(self, *args) -> None:
         print('edit tool toggled')
-
-    def on_tool_notebook_clicked(self, *args) -> None:
-        self.controller.show_assign_notebook_dialog()
 
     def on_tool_delete_clicked(self, *args) -> None:
         print('delete tool clicked')
@@ -86,9 +86,6 @@ class SourceEditor:
     def on_source_buffer_changed(self, *args) -> None:
         if self.loading_note:
             return
-
-        self.controller.update_undo_redo(self.source_buffer.can_undo(),
-                                         self.source_buffer.can_redo())
 
         self.set_loading_status(True)
 

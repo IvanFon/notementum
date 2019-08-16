@@ -17,7 +17,7 @@ class Model:
         self.create_notes_table()
 
         self.selected_notebook = 'All Notes'
-        self.selected_note = None
+        self.selected_note = ''
 
     def get_db_path(self) -> Path:
         return Path(os.environ['HOME']).joinpath('.notes.db')
@@ -47,6 +47,9 @@ class Model:
         return notebooks
 
     def get_notes(self, notebook: str = None) -> List[Note]:
+        if notebook == 'All Notes':
+            notebook = None
+
         notes = []
 
         c = self.conn.cursor()

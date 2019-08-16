@@ -12,6 +12,8 @@
     </columns>
   </object>
   <object class="GtkDialog" id="dialog_assign_notebook">
+    <property name="width_request">250</property>
+    <property name="height_request">300</property>
     <property name="can_focus">False</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -66,8 +68,6 @@
         </child>
         <child>
           <object class="GtkTreeView">
-            <property name="width_request">250</property>
-            <property name="height_request">300</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="model">store_assign_notebooks</property>
@@ -84,7 +84,6 @@
                   </object>
                   <attributes>
                     <attribute name="editable">1</attribute>
-                    <attribute name="size-points">23</attribute>
                     <attribute name="text">0</attribute>
                   </attributes>
                 </child>

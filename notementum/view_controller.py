@@ -62,11 +62,8 @@ class ViewController:
 
     def refresh_notebooks(self) -> None:
         notebooks = self.model.get_notebooks()
-
-        if self.model.selected_notebook == 'All Notes':
-            self.notebook_list.display_notebooks(notebooks, True)
-        else:
-            self.notebook_list.display_notebooks(notebooks)
+        self.notebook_list.display_notebooks(notebooks)
+        self.notebook_list.select_notebook(self.model.selected_notebook)
 
     def notebook_selected(self, notebook: str) -> None:
         self.model.set_selected_notebook(notebook)
@@ -77,20 +74,22 @@ class ViewController:
             notes = self.model.get_notes(notebook)
 
         self.notes_list.display_notes(notes)
+        self.notes_list.select_note(-1)
 
     def note_selected(self, note_id: int) -> None:
         self.model.set_selected_note(note_id)
         content = self.model.get_note_content(note_id)
-        self.source_editor.display_content(content)
+        self.source_editor.edit_note(content)
 
     def save_current_note_content(self, content: str) -> None:
         self.model.save_note_content(self.model.selected_note, content)
 
     def rename_note(self, note_id: int, name: str) -> None:
         self.model.rename_note(note_id, name)
-
-    def update_undo_redo(self, can_undo: bool, can_redo: bool) -> None:
-        self.main_window.update_undo_redo(can_undo, can_redo)
+        self.notes_list.display_notes(
+            self.model.get_notes(self.model.selected_notebook))
+        self.note_selected(note_id)
+        self.notes_list.select_note(self.model.selected_note)
 
     def editor_undo(self) -> None:
         self.source_editor.undo()
@@ -99,11 +98,12 @@ class ViewController:
         self.source_editor.redo()
 
     def show_assign_notebook_dialog(self) -> None:
-        res = self.assign_notebook_dialog.show(self.model.get_notebooks())
-        if res == Gtk.ResponseType.APPLY:
-            # TODO: refresh notes list
-            # reselect if notebook changed
-            self.refresh_notebooks()
+        note_id = self.model.selected_note
 
-    def assign_notebook(self, notebook: str) -> None:
-        self.model.assign_notebook(self.model.selected_note, notebook)
+        res, notebook = self.assign_notebook_dialog.show(
+            self.model.get_notebooks())
+        if res == Gtk.ResponseType.APPLY:
+            self.model.assign_notebook(self.model.selected_note, notebook)
+            self.refresh_notebooks()
+            self.notebook_list.select_notebook(notebook)
+            self.notes_list.select_note(note_id)

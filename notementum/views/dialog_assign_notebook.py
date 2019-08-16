@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable, Dict, List
+from typing import TYPE_CHECKING, Callable, Dict, List, Tuple
 
 from gi.repository import Gtk
 
@@ -21,7 +21,7 @@ class AssignNotebookDialog:
 
         self.new_notebook_iter = None
 
-    def show(self, notebooks: List[str]) -> Gtk.ResponseType:
+    def show(self, notebooks: List[str]) -> Tuple[Gtk.ResponseType, str]:
         self.store_assign_notebooks.clear()
 
         self.new_notebook_iter = self.store_assign_notebooks.append([
@@ -31,12 +31,10 @@ class AssignNotebookDialog:
             self.store_assign_notebooks.append([notebook, False])
 
         res = self.dialog_assign_notebook.run()
-        if res == Gtk.ResponseType.APPLY:
-            model, treeiter = self.tree_selection_assign_notebook.get_selected()
-            self.controller.assign_notebook(model[treeiter][0])
-
         self.dialog_assign_notebook.hide()
-        return res
+
+        model, treeiter = self.tree_selection_assign_notebook.get_selected()
+        return res, model[treeiter][0]
 
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {

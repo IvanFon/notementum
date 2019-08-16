@@ -27,6 +27,18 @@ class NotesList:
         for note in notes:
             self.store_notes.append([note.id, note.name])
 
+    def select_note(self, note_id: int) -> None:
+        if note_id == -1:
+            self.tree_selection_notes.select_path(Gtk.TreePath(0))
+            return
+
+        note_iter = self.store_notes.get_iter_first()
+        while note_iter is not None:
+            if self.store_notes[note_iter][0] == note_id:
+                self.tree_selection_notes.select_iter(note_iter)
+                return
+            note_iter = self.store_notes.iter_next(note_iter)
+
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_tree_selection_notes_changed':
