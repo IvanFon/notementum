@@ -33,7 +33,11 @@ setup(
         'notementum',
         'notementum/views'
     ],
-    install_requires=['PyGObject'],
+    install_requires=[
+        'PyGObject',
+        'mistletoe',
+        'pygments',
+    ],
     package_data={'notementum': ['res/*']},
     entry_points={'gui_scripts': ['notementum = notementum.__main__:main']}
 )

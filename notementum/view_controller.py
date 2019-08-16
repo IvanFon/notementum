@@ -4,7 +4,8 @@ from typing import List
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('GtkSource', '4')
-from gi.repository import Gtk, GtkSource, GObject
+gi.require_version('WebKit2', '4.0')
+from gi.repository import Gtk, GtkSource, GObject, WebKit2
 from pkg_resources import resource_filename
 
 from .model import Model
@@ -15,6 +16,7 @@ from .views.notes_list import NotesList
 from .views.source_editor import SourceEditor
 
 GObject.type_register(GtkSource.View)
+GObject.type_register(WebKit2.WebView)
 
 
 class ViewController:
@@ -92,6 +94,9 @@ class ViewController:
     def save_current_note_content(self, content: str) -> None:
         self.model.save_note_content(self.model.selected_note, content)
 
+        if not self.model.editing:
+            self.toggle_editor(False)
+
     def rename_note(self, note_id: int, name: str) -> None:
         self.model.rename_note(note_id, name)
         self.notes_list.display_notes(
@@ -128,3 +133,12 @@ class ViewController:
 
     def disable_editor(self) -> None:
         self.source_editor.set_editor_enabled(False, True)
+
+    def toggle_editor(self, editing: bool) -> None:
+        self.model.editing = editing
+
+        if editing:
+            self.source_editor.show_editor()
+        else:
+            self.source_editor.show_preview(
+                self.model.get_selected_note_preview())

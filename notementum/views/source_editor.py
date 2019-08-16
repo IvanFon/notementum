@@ -13,6 +13,8 @@ class SourceEditor:
         self.controller = controller
 
         self.source_edit = builder.get_object('source_edit')
+        self.webview_preview = builder.get_object('webview_preview')
+        self.stack_editor = builder.get_object('stack_editor')
         self.stack_save_status = builder.get_object('stack_save_status')
         self.tool_edit = builder.get_object('tool_edit')
         self.tool_notebook = builder.get_object('tool_notebook')
@@ -49,6 +51,7 @@ class SourceEditor:
         self.source_buffer.set_text(content)
         self.set_editor_enabled(True)
         self.set_loading_status(False)
+        self.tool_edit.set_active(True)
 
         self.loading_note = False
 
@@ -79,6 +82,15 @@ class SourceEditor:
         if clear:
             self.source_buffer.set_text('')
 
+    def show_editor(self) -> None:
+        self.stack_editor.set_visible_child(
+            self.stack_editor.get_children()[0])
+
+    def show_preview(self, preview_content: str) -> None:
+        self.stack_editor.set_visible_child(
+            self.stack_editor.get_children()[1])
+        self.webview_preview.load_html(preview_content)
+
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_source_edit_destroy': (lambda *a: self.save_note(False)),
@@ -92,7 +104,7 @@ class SourceEditor:
         }
 
     def on_tool_edit_toggled(self, *args) -> None:
-        print('edit tool toggled')
+        self.controller.toggle_editor(self.tool_edit.get_active())
 
     def on_source_buffer_changed(self, *args) -> None:
         if self.loading_note:

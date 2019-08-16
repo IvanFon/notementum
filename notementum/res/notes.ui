@@ -3,6 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <requires lib="gtksourceview" version="4.0"/>
+  <requires lib="webkit2gtk" version="2.12"/>
   <object class="GtkListStore" id="store_assign_notebooks">
     <columns>
       <!-- column-name name -->
@@ -545,6 +546,20 @@
                               <packing>
                                 <property name="name">page0</property>
                                 <property name="title" translatable="yes">page0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="WebKitWebView" id="webview_preview">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="name">page1</property>
+                                <property name="title" translatable="yes">page1</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>

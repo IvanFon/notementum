@@ -3,6 +3,8 @@ from typing import List
 import os
 import sqlite3
 
+from .markdown import gen_preview
+
 
 class Note:
     def __init__(self, id_: int, name: str, notebook: str):
@@ -18,6 +20,7 @@ class Model:
 
         self.selected_notebook = 'All Notes'
         self.selected_note = ''
+        self.editing = True
 
     def get_db_path(self) -> Path:
         return Path(os.environ['HOME']).joinpath('.notes.db')
@@ -112,3 +115,6 @@ class Model:
                      WHERE id=?
                   ''', (note_id,))
         self.conn.commit()
+
+    def get_selected_note_preview(self) -> str:
+        return gen_preview(self.get_note_content(self.selected_note))
