@@ -11,6 +11,7 @@ from pkg_resources import resource_filename
 
 from .model import Model
 from .views.dialog_assign_notebook import AssignNotebookDialog
+from .views.dialog_delete_note import DeleteNoteDialog
 from .views.main_window import MainWindow
 from .views.notebook_list import NotebookList
 from .views.notes_list import NotesList
@@ -31,6 +32,7 @@ class ViewController:
         self.notes_list = NotesList(self, builder)
         self.source_editor = SourceEditor(self, builder)
         self.assign_notebook_dialog = AssignNotebookDialog(self, builder)
+        self.dialog_delete_note = DeleteNoteDialog(self, builder)
 
         # Connect signals
         signal_handlers = dict(chain.from_iterable(
@@ -112,6 +114,12 @@ class ViewController:
             self.notes_list.select_note(note_id)
 
     def delete_selected_note(self) -> None:
+        res = self.dialog_delete_note.show(
+            self.model.get_note_name(self.model.selected_note))
+
+        if not res == Gtk.ResponseType.APPLY:
+            return
+
         self.model.delete_note(self.model.selected_note)
         notebooks = self.refresh_notebooks()
         if self.model.selected_notebook in notebooks:

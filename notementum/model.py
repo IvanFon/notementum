@@ -39,7 +39,9 @@ class Model:
         notebooks = []
 
         c = self.conn.cursor()
-        c.execute('SELECT DISTINCT notebook FROM notes')
+        c.execute('''SELECT DISTINCT notebook
+                     FROM notes
+                  ''')
 
         for res in c:
             if res[0] is None:
@@ -57,7 +59,8 @@ class Model:
 
         c = self.conn.cursor()
         if notebook:
-            c.execute('''SELECT * FROM notes
+            c.execute('''SELECT *
+                         FROM notes
                          WHERE notebook=?
                       ''', (notebook,))
         else:
@@ -80,7 +83,8 @@ class Model:
 
     def get_note_content(self, note_id: int) -> str:
         c = self.conn.cursor()
-        c.execute('''SELECT content FROM notes
+        c.execute('''SELECT content
+                     FROM notes
                      WHERE id=?
                   ''', (note_id,))
         return c.fetchone()[0]
@@ -111,10 +115,19 @@ class Model:
 
     def delete_note(self, note_id: int) -> None:
         c = self.conn.cursor()
-        c.execute('''DELETE FROM notes
+        c.execute('''DELETE
+                     FROM notes
                      WHERE id=?
                   ''', (note_id,))
         self.conn.commit()
 
     def get_selected_note_preview(self) -> str:
         return gen_preview(self.get_note_content(self.selected_note))
+
+    def get_note_name(self, note_id: int) -> str:
+        c = self.conn.cursor()
+        c.execute('''SELECT name
+                     FROM notes
+                     WHERE id=?
+                  ''', (note_id,))
+        return c.fetchone()[0]
