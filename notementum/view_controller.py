@@ -145,6 +145,8 @@ class ViewController:
     def key_pressed(self, keyval: int, state: Gdk.ModifierType) -> None:
         if keyval == Gdk.KEY_e and state == Gdk.ModifierType.CONTROL_MASK:
             self.toggle_editor(not self.model.editing)
+        elif keyval == Gdk.KEY_Escape:
+            self.notes_list.focus_search()
 
     def new_note(self, name: str) -> None:
         if name is None:

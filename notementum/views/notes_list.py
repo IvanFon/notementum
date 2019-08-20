@@ -45,6 +45,9 @@ class NotesList:
                 return
             note_iter = self.store_notes.iter_next(note_iter)
 
+    def focus_search(self) -> None:
+        self.search_notes.grab_focus()
+
     def clear_search(self) -> None:
         self.search_notes.set_text('')
 
