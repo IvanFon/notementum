@@ -44,6 +44,9 @@ class SourceEditor:
     def edit_note(self, content: str) -> None:
         self.loading_note = True
 
+        if content is None:
+            content = ''
+
         if self.save_timer is not None:
             GLib.Source.remove(self.save_timer)
 
@@ -92,6 +95,13 @@ class SourceEditor:
         self.stack_editor.set_visible_child(
             self.stack_editor.get_children()[1])
         self.webview_preview.load_html(preview_content)
+
+    def focus(self) -> None:
+        self.source_edit.grab_focus()
+
+        # Place cursor at start
+        self.source_buffer.place_cursor(
+            self.source_buffer.get_start_iter())
 
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {

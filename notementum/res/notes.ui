@@ -324,6 +324,7 @@
                         <property name="primary_icon_name">edit-find-symbolic</property>
                         <property name="primary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">False</property>
+                        <signal name="activate" handler="on_search_notes_activate" swapped="no"/>
                         <signal name="search-changed" handler="on_search_notes_search_changed" swapped="no"/>
                       </object>
                       <packing>

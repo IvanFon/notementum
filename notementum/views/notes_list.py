@@ -45,13 +45,16 @@ class NotesList:
                 return
             note_iter = self.store_notes.iter_next(note_iter)
 
+    def clear_search(self) -> None:
+        self.search_notes.set_text('')
+
     def search_filter(self, model, treeiter, data) -> bool:
         search_text = self.search_notes.get_text()
 
         if search_text == '':
             return True
 
-        if search_text in model[treeiter][1]:
+        if search_text.lower() in model[treeiter][1].lower():
             return True
 
         return False
@@ -62,6 +65,7 @@ class NotesList:
                 self.on_tree_selection_notes_changed,
             'on_search_notes_search_changed':
                 self.on_search_notes_search_changed,
+            'on_search_notes_activate': self.on_search_notes_activate,
             'on_btn_new_clicked': self.on_btn_new_clicked,
             'on_cell_note_name_edited': self.on_cell_note_name_edited,
         }
@@ -79,11 +83,21 @@ class NotesList:
     def on_search_notes_search_changed(self, *args) -> None:
         self.tree_filter_notes.refilter()
 
-        if self.search_notes.get_text() == '':
-            self.select_note(-1)
+        self.select_note(-1)
+
+    def on_search_notes_activate(self, *args) -> None:
+        model, treeiter = self.tree_selection_notes.get_selected()
+
+        if treeiter is None:
+            self.controller.new_note(self.search_notes.get_text())
+        else:
+            self.controller.note_selected(model[treeiter][0])
+
+        self.controller.focus_editor()
 
     def on_btn_new_clicked(self, *args) -> None:
-        print('btn new clicked')
+        search = self.search_notes.get_text()
+        self.controller.new_note(None if search == '' else search)
 
     def on_cell_note_name_edited(self,
                                  renderer: Gtk.CellRendererText,

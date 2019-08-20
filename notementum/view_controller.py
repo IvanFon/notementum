@@ -145,3 +145,19 @@ class ViewController:
     def key_pressed(self, keyval: int, state: Gdk.ModifierType) -> None:
         if keyval == Gdk.KEY_e and state == Gdk.ModifierType.CONTROL_MASK:
             self.toggle_editor(not self.model.editing)
+
+    def new_note(self, name: str) -> None:
+        if name is None:
+            name = 'New note'
+
+        new_note_id = self.model.create_note(
+            name, self.model.selected_notebook)
+
+        self.notes_list.clear_search()
+        self.notes_list.display_notes(
+            self.model.get_notes(self.model.selected_notebook))
+        self.note_selected(new_note_id)
+        self.focus_editor()
+
+    def focus_editor(self) -> None:
+        self.source_editor.focus()

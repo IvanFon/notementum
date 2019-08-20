@@ -131,3 +131,15 @@ class Model:
                      WHERE id=?
                   ''', (note_id,))
         return c.fetchone()[0]
+
+    def create_note(self, name: str, notebook: str) -> int:
+        if notebook == 'All Notes':
+            notebook = None
+
+        c = self.conn.cursor()
+        c.execute('''INSERT INTO notes (name, notebook)
+                     VALUES (?, ?)
+                  ''', (name, notebook,))
+        self.conn.commit()
+
+        return c.lastrowid
