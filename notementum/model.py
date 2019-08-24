@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 import os
 import sqlite3
 
@@ -17,6 +17,7 @@ class Model:
     def __init__(self) -> None:
         self.conn = sqlite3.connect(self.get_db_path())
         self.create_notes_table()
+        self.create_attachments_table()
 
         self.selected_notebook = 'All Notes'
         self.selected_note = ''
@@ -32,6 +33,15 @@ class Model:
                         name text NOT NULL,
                         notebook text,
                         content text
+                     );
+                  ''')
+
+    def create_attachments_table(self) -> None:
+        c = self.conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS attachments (
+                        id integer PRIMARY KEY,
+                        name text NOT NULL,
+                        data text NOT NULL
                      );
                   ''')
 
@@ -122,7 +132,7 @@ class Model:
         self.conn.commit()
 
     def get_selected_note_preview(self) -> str:
-        return gen_preview(self.get_note_content(self.selected_note))
+        return gen_preview(self, self.get_note_content(self.selected_note))
 
     def get_note_name(self, note_id: int) -> str:
         c = self.conn.cursor()
@@ -143,3 +153,38 @@ class Model:
         self.conn.commit()
 
         return c.lastrowid
+
+    def add_image(self, name: str, data: str) -> None:
+        c = self.conn.cursor()
+        c.execute('''INSERT INTO attachments (name, data)
+                     VALUES (?, ?)
+                  ''', (name, data,))
+        self.conn.commit()
+
+    def get_images(self) -> List[Tuple[int, str]]:
+        images = []
+
+        c = self.conn.cursor()
+        c.execute('''SELECT id, name
+                     FROM attachments
+                  ''')
+        for res in c:
+            images.append((res[0], res[1]))
+
+        return images
+
+    def get_image(self, name: str) -> str:
+        c = self.conn.cursor()
+        c.execute('''SELECT data
+                     FROM attachments
+                     WHERE name=?
+                  ''', (name,))
+        return c.fetchone()[0]
+
+    def delete_image(self, image_id: int) -> str:
+        c = self.conn.cursor()
+        c.execute('''DELETE
+                     FROM attachments
+                     WHERE id=?
+                  ''', (image_id,))
+        self.conn.commit()

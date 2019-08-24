@@ -4,6 +4,19 @@
   <requires lib="gtk+" version="3.20"/>
   <requires lib="gtksourceview" version="4.0"/>
   <requires lib="webkit2gtk" version="2.12"/>
+  <object class="GtkFileFilter" id="file_filter_attachments">
+    <mime-types>
+      <mime-type>image/jpeg</mime-type>
+      <mime-type>image/png</mime-type>
+      <mime-type>image/bmp</mime-type>
+      <mime-type>image/gif</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkImage" id="img_apply">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-apply</property>
+  </object>
   <object class="GtkListStore" id="store_assign_notebooks">
     <columns>
       <!-- column-name name -->
@@ -16,6 +29,7 @@
     <property name="width_request">250</property>
     <property name="height_request">300</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Assign notebook...</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
@@ -31,7 +45,7 @@
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
+            <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="btn_assign_notebook_cancel">
                 <property name="label">gtk-cancel</property>
@@ -103,6 +117,14 @@
       <action-widget response="-6">btn_assign_notebook_cancel</action-widget>
       <action-widget response="-10">btn_assign_notebook_apply</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkListStore" id="store_attachments">
+    <columns>
+      <!-- column-name id -->
+      <column type="guint"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkListStore" id="store_notebooks">
     <columns>
@@ -443,6 +465,21 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkToolButton" id="tool_attach">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Attach image</property>
+                        <property name="label" translatable="yes">Attach image</property>
+                        <property name="use_underline">True</property>
+                        <property name="icon_name">insert-image</property>
+                        <signal name="clicked" handler="on_tool_attach_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkToolButton" id="tool_delete">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -596,9 +633,284 @@
       </object>
     </child>
   </object>
+  <object class="GtkDialog" id="dialog_attachments">
+    <property name="width_request">250</property>
+    <property name="height_request">300</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Attachments</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">win_main</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_attachments_close">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_attachments_insert_selected">
+                <property name="label" translatable="yes">Insert Selected</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTreeView" id="tree_attachments">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="model">store_attachments</property>
+            <property name="search_column">1</property>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection" id="tree_selection_attachments">
+                <signal name="changed" handler="on_tree_selection_attachments_changed" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn">
+                <property name="title" translatable="yes">ID</property>
+                <child>
+                  <object class="GtkCellRendererText"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn">
+                <property name="title" translatable="yes">Name</property>
+                <child>
+                  <object class="GtkCellRendererText"/>
+                  <attributes>
+                    <attribute name="text">1</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolbar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkToolButton" id="tool_attachment_add">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Add an attachment to the database</property>
+                <property name="label" translatable="yes">Add attachment</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-open</property>
+                <signal name="clicked" handler="on_tool_attachment_add_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="tool_attachment_delete">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Delete selected attachment from database</property>
+                <property name="label" translatable="yes">Delete attachment</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-delete</property>
+                <signal name="clicked" handler="on_tool_attachment_delete_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <style>
+              <class name="inline-toolbar"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-7">btn_attachments_close</action-widget>
+      <action-widget response="-10">btn_attachments_insert_selected</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkMessageDialog" id="dialog_delete_attachment">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Delete attachment...</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">dialog_attachments</property>
+    <property name="text" translatable="yes">Delete Attachment</property>
+    <property name="secondary_text" translatable="yes">Permanently delete attachment {attachment}?</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button1">
+                <property name="label">gtk-apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">button2</action-widget>
+      <action-widget response="-10">button1</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkFileChooserDialog" id="dialog_file_attachment">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Add attachment...</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="transient_for">dialog_attachments</property>
+    <property name="filter">file_filter_attachments</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btn_file_attachments_cancel">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_file_attachments_add">
+                <property name="label" translatable="yes">Add</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">img_apply</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">btn_file_attachments_cancel</action-widget>
+      <action-widget response="-10">btn_file_attachments_add</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkMessageDialog" id="dialog_delete_note">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Delete Note</property>
+    <property name="title" translatable="yes">Delete note...</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>

@@ -1,5 +1,7 @@
 from itertools import chain
+from pathlib import Path
 from typing import List
+import base64
 
 import gi
 gi.require_version('Gdk', '3.0')
@@ -11,6 +13,8 @@ from pkg_resources import resource_filename
 
 from .model import Model
 from .views.dialog_assign_notebook import AssignNotebookDialog
+from .views.dialog_attachments import AttachmentsDialog
+from .views.dialog_delete_attachment import DeleteAttachmentDialog
 from .views.dialog_delete_note import DeleteNoteDialog
 from .views.main_window import MainWindow
 from .views.notebook_list import NotebookList
@@ -33,6 +37,8 @@ class ViewController:
         self.source_editor = SourceEditor(self, builder)
         self.assign_notebook_dialog = AssignNotebookDialog(self, builder)
         self.dialog_delete_note = DeleteNoteDialog(self, builder)
+        self.dialog_delete_attachment = DeleteAttachmentDialog(self, builder)
+        self.dialog_attachments = AttachmentsDialog(self, builder)
 
         # Connect signals
         signal_handlers = dict(chain.from_iterable(
@@ -42,6 +48,7 @@ class ViewController:
                 self.notes_list.get_signal_handlers(),
                 self.source_editor.get_signal_handlers(),
                 self.assign_notebook_dialog.get_signal_handlers(),
+                self.dialog_attachments.get_signal_handlers(),
             ])
         ))
         builder.connect_signals(signal_handlers)
@@ -163,3 +170,26 @@ class ViewController:
 
     def focus_editor(self) -> None:
         self.source_editor.focus()
+
+    def show_attachment_dialog(self) -> None:
+        res, name = self.dialog_attachments.show(self.model.get_images())
+        if not res == Gtk.ResponseType.APPLY:
+            return
+
+        self.source_editor.insert('![]({})'.format(name))
+
+    def add_attachment(self, path: str) -> None:
+        with open(path, 'rb') as image:
+            image_name = Path(path).name
+            image_data = base64.b64encode(image.read())
+            self.model.add_image(image_name, image_data)
+
+        self.dialog_attachments.refresh_attachments(self.model.get_images())
+
+    def delete_attachment(self, id_: int, name: str) -> None:
+        res = self.dialog_delete_attachment.show(name)
+        if not res == Gtk.ResponseType.APPLY:
+            return
+
+        self.model.delete_image(id_)
+        self.dialog_attachments.refresh_attachments(self.model.get_images())

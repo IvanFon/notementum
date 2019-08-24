@@ -103,12 +103,18 @@ class SourceEditor:
         self.source_buffer.place_cursor(
             self.source_buffer.get_start_iter())
 
+    def insert(self, data: str) -> None:
+        self.source_buffer.insert_at_cursor(data, len(data))
+
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_source_edit_destroy': (lambda *a: self.save_note(False)),
             'on_tool_edit_toggled': self.on_tool_edit_toggled,
             'on_tool_notebook_clicked': (
                 lambda *a: self.controller.show_assign_notebook_dialog()
+            ),
+            'on_tool_attach_clicked': (
+                lambda *a: self.controller.show_attachment_dialog()
             ),
             'on_tool_delete_clicked': (
                 lambda *a: self.controller.delete_selected_note()
