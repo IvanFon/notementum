@@ -15,3 +15,19 @@ Notementum depends on:
   - PyGObject
   - WebKitGTK 2
   - GtkSourceView 4
+
+### Arch Linux
+
+Available as a package on the AUR: [notementum](https://aur.archlinux.org/packages/notementum)
+
+Install it with `makepkg` or your preferred AUR helper.
+
+### pip
+
+Available on PyPI: [notementum](https://pypi.org/project/notementum/)
+
+Install it with pip: `pip install --user notementum`.
+
+### Manual install
+
+Download the [latest release](https://github.com/IvanFon/notementum/releases/latest) or clone this repo and run `./setup.py install --user`.
