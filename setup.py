@@ -7,7 +7,7 @@ with open('README.md') as f:
 setup(
     name='notementum',
     version='0.1.0',
-    description='A native, cross-platform, Markdown notebook app.',
+    description='A native Markdown notebook app.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Ivan Fonseca',
