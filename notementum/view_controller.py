@@ -12,6 +12,7 @@ from gi.repository import Gdk, Gtk, GtkSource, GObject, WebKit2
 from pkg_resources import resource_filename
 
 from .model import Model
+from .views.dialog_about import AboutDialog
 from .views.dialog_assign_notebook import AssignNotebookDialog
 from .views.dialog_attachments import AttachmentsDialog
 from .views.dialog_delete_attachment import DeleteAttachmentDialog
@@ -36,9 +37,10 @@ class ViewController:
         self.notes_list = NotesList(self, builder)
         self.source_editor = SourceEditor(self, builder)
         self.assign_notebook_dialog = AssignNotebookDialog(self, builder)
-        self.dialog_delete_note = DeleteNoteDialog(self, builder)
-        self.dialog_delete_attachment = DeleteAttachmentDialog(self, builder)
+        self.dialog_about = AboutDialog(self, builder)
         self.dialog_attachments = AttachmentsDialog(self, builder)
+        self.dialog_delete_attachment = DeleteAttachmentDialog(self, builder)
+        self.dialog_delete_note = DeleteNoteDialog(self, builder)
 
         # Connect signals
         signal_handlers = dict(chain.from_iterable(
@@ -64,6 +66,9 @@ class ViewController:
         self.main_window.win_main.show_all()
 
         Gtk.main()
+
+    def show_about_dialog(self) -> None:
+        self.dialog_about.show()
 
     def refresh_notebooks(self) -> List[str]:
         # displaying can mistakenly select a different notebook, save it

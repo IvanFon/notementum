@@ -19,13 +19,15 @@ class MainWindow:
     def get_signal_handlers(self) -> Dict[str, Callable[..., None]]:
         return {
             'on_win_main_destroy': (lambda *a: Gtk.main_quit()),
+            'on_win_main_key_press_event': self.on_win_main_key_press_event,
             'on_menu_item_new_activate': self.on_menu_item_new_activate,
             'on_menu_item_quit_activate': (lambda *a: Gtk.main_quit()),
             'on_menu_item_undo_activate':
                 (lambda *a: self.controller.editor_undo()),
             'on_menu_item_redo_activate':
                 (lambda *a: self.controller.editor_redo()),
-            'on_win_main_key_press_event': self.on_win_main_key_press_event,
+            'on_menu_item_about_activate':
+                (lambda *a: self.controller.show_about_dialog()),
         }
 
     def on_menu_item_new_activate(self, *args) -> None:
