@@ -173,13 +173,17 @@ class Model:
 
         return images
 
-    def get_image(self, name: str) -> str:
+    def get_image(self, name: str) -> bytes:
         c = self.conn.cursor()
         c.execute('''SELECT data
                      FROM attachments
                      WHERE name=?
                   ''', (name,))
-        return c.fetchone()[0]
+        row = c.fetchone()
+        if row is None:
+            return b''
+
+        return row[0]
 
     def delete_image(self, image_id: int) -> str:
         c = self.conn.cursor()
