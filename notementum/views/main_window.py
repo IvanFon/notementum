@@ -20,7 +20,8 @@ class MainWindow:
         return {
             'on_win_main_destroy': (lambda *a: Gtk.main_quit()),
             'on_win_main_key_press_event': self.on_win_main_key_press_event,
-            'on_menu_item_new_activate': self.on_menu_item_new_activate,
+            'on_menu_item_new_activate':
+                (lambda *a: self.controller.new_note(None)),
             'on_menu_item_quit_activate': (lambda *a: Gtk.main_quit()),
             'on_menu_item_undo_activate':
                 (lambda *a: self.controller.editor_undo()),
@@ -29,9 +30,6 @@ class MainWindow:
             'on_menu_item_about_activate':
                 (lambda *a: self.controller.show_about_dialog()),
         }
-
-    def on_menu_item_new_activate(self, *args) -> None:
-        print('menu file new activated')
 
     def on_win_main_key_press_event(self,
                                     widget: Gtk.Widget,
