@@ -437,7 +437,7 @@
                       <object class="GtkToggleToolButton" id="tool_edit">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Edit</property>
+                        <property name="tooltip_text" translatable="yes">Toggle edit/preview</property>
                         <property name="label" translatable="yes">Edit</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-edit</property>
@@ -453,7 +453,7 @@
                       <object class="GtkToolButton" id="tool_notebook">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Notebook</property>
+                        <property name="tooltip_text" translatable="yes">Assign notebook</property>
                         <property name="label" translatable="yes">Notebook</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-file</property>
@@ -483,7 +483,7 @@
                       <object class="GtkToolButton" id="tool_delete">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Delete</property>
+                        <property name="tooltip_text" translatable="yes">Delete note</property>
                         <property name="label" translatable="yes">Delete</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-delete</property>
