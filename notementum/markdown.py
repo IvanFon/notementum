@@ -7,29 +7,21 @@ from pkg_resources import resource_filename
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_by_name as get_lexer, guess_lexer
-from pygments.styles import get_style_by_name as get_style
 
 if TYPE_CHECKING:
     from .model import Model
 
 
-# https://github.com/miyuchina/mistletoe/blob/master/contrib/pygments_renderer.py
-# revision 8d96244
-# https://github.com/miyuchina/mistletoe/blob/master/contrib/mathjax.py
-# revision 6991a8c
-
 class NotementumRenderer(HTMLRenderer, LaTeXRenderer):
-    # TODO: load from local file
+    formatter = HtmlFormatter(style='notementum')
 
-    formatter = HtmlFormatter()
-    formatter.noclasses = True
-
-    def __init__(self, *extras, style='vim', model: 'Model'):
+    def __init__(self, *extras, model: 'Model'):
         super().__init__(*extras)
-        self.formatter.style = get_style(style)
 
         self.model = model
 
+    # https://github.com/miyuchina/mistletoe/blob/master/contrib/mathjax.py
+    # revision 6991a8c
     def render_math(self, token):
         """
         Ensure Math tokens are all enclosed in two dollar signs.
@@ -38,6 +30,8 @@ class NotementumRenderer(HTMLRenderer, LaTeXRenderer):
             return self.render_raw_text(token)
         return '${}$'.format(self.render_raw_text(token))
 
+    # https://github.com/miyuchina/mistletoe/blob/master/contrib/pygments_renderer.py
+    # revision 8d96244
     def render_block_code(self, token):
         code = token.children[0].content
         if token.language:
@@ -62,11 +56,11 @@ class NotementumRenderer(HTMLRenderer, LaTeXRenderer):
 def gen_preview(model: 'Model', content: str) -> str:
     with NotementumRenderer(model=model) as renderer:
         render = renderer.render(Document(content))
+        highlight_style = renderer.formatter.get_style_defs()
 
     with open(resource_filename('notementum', 'res/preview.html')) as f:
         preview = f.read()
-        preview = preview.replace(
-            '{{{CONTENT}}}',
-            render)
+        preview = preview.replace('{{{HIGHLIGHT_STYLE}}}', highlight_style)
+        preview = preview.replace('{{{CONTENT}}}', render)
 
         return preview

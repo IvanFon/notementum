@@ -39,5 +39,12 @@ setup(
         'pygments',
     ],
     package_data={'notementum': ['res/*']},
-    entry_points={'gui_scripts': ['notementum = notementum.__main__:main']}
+    entry_points={
+        'gui_scripts': [
+            'notementum = notementum.__main__:main'
+        ],
+        'pygments.styles': [
+            'notementum = notementum.highlight_style:NotementumStyle'
+        ]
+    }
 )
