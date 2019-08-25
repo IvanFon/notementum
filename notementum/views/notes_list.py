@@ -96,11 +96,13 @@ class NotesList:
         else:
             self.controller.note_selected(model[treeiter][0])
 
+        self.search_notes.set_text('')
         self.controller.focus_editor()
 
     def on_btn_new_clicked(self, *args) -> None:
         search = self.search_notes.get_text()
         self.controller.new_note(None if search == '' else search)
+        self.search_notes.set_text('')
 
     def on_cell_note_name_edited(self,
                                  renderer: Gtk.CellRendererText,
