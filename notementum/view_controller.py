@@ -29,6 +29,11 @@ gi.require_version('WebKit2', '4.0')
 from gi.repository import Gdk, Gtk, GtkSource, GObject, WebKit2
 from pkg_resources import resource_filename
 
+from .constants import (
+    ALL_NOTES_NOTEBOOK,
+    NONE_NOTEBOOK,
+    NEW_NOTE_NAME,
+)
 from .model import Model
 from .views.dialog_about import AboutDialog
 from .views.dialog_assign_notebook import AssignNotebookDialog
@@ -103,7 +108,7 @@ class ViewController:
     def notebook_selected(self, notebook: str) -> None:
         self.model.set_selected_notebook(notebook)
 
-        if notebook == 'All Notes':
+        if notebook == ALL_NOTES_NOTEBOOK:
             notes = self.model.get_notes()
         else:
             notes = self.model.get_notes(notebook)
@@ -138,7 +143,7 @@ class ViewController:
         res, notebook = self.assign_notebook_dialog.show(
             self.model.get_notebooks())
         if res == Gtk.ResponseType.APPLY:
-            if notebook == 'None (All Notes)':
+            if notebook == NONE_NOTEBOOK:
                 notebook = None
             self.model.assign_notebook(self.model.selected_note, notebook)
             self.refresh_notebooks()
@@ -158,8 +163,8 @@ class ViewController:
             self.notebook_list.select_notebook(self.model.selected_notebook)
             self.notes_list.select_note(-1)
         else:
-            self.notebook_list.select_notebook('All Notes')
-            self.notebook_selected('All Notes')
+            self.notebook_list.select_notebook(ALL_NOTES_NOTEBOOK)
+            self.notebook_selected(ALL_NOTES_NOTEBOOK)
 
     def disable_editor(self) -> None:
         self.source_editor.set_editor_enabled(False, True)
@@ -182,7 +187,7 @@ class ViewController:
 
     def new_note(self, name: str) -> None:
         if name is None:
-            name = 'New note'
+            name = NEW_NOTE_NAME
 
         new_note_id = self.model.create_note(
             name, self.model.selected_notebook)

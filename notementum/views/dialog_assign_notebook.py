@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, Callable, Dict, List, Tuple
 
 from gi.repository import Gtk
 
+from ..constants import NONE_NOTEBOOK
+
 if TYPE_CHECKING:
     from .view_controller import ViewController
 
@@ -49,7 +51,7 @@ class AssignNotebookDialog:
         self.store_assign_notebooks.clear()
 
         self.none_notebook_iter = self.store_assign_notebooks.append([
-            'None (All Notes)', False, FONT_WEIGHT_BOLD])
+            NONE_NOTEBOOK, False, FONT_WEIGHT_BOLD])
         self.new_notebook_iter = self.store_assign_notebooks.append([
             '<New notebook>', True, FONT_WEIGHT_BOLD])
 

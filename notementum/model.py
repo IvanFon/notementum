@@ -21,6 +21,7 @@ from typing import List, Tuple
 import os
 import sqlite3
 
+from .constants import ALL_NOTES_NOTEBOOK
 from .markdown import gen_preview
 
 
@@ -37,7 +38,7 @@ class Model:
         self.create_notes_table()
         self.create_attachments_table()
 
-        self.selected_notebook = 'All Notes'
+        self.selected_notebook = ALL_NOTES_NOTEBOOK
         self.selected_note = ''
         self.editing = True
 
@@ -80,7 +81,7 @@ class Model:
         return notebooks
 
     def get_notes(self, notebook: str = None) -> List[Note]:
-        if notebook == 'All Notes':
+        if notebook == ALL_NOTES_NOTEBOOK:
             notebook = None
 
         notes = []
@@ -161,7 +162,7 @@ class Model:
         return c.fetchone()[0]
 
     def create_note(self, name: str, notebook: str) -> int:
-        if notebook == 'All Notes':
+        if notebook == ALL_NOTES_NOTEBOOK:
             notebook = None
 
         c = self.conn.cursor()

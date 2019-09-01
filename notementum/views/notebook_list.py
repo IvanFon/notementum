@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, Callable, Dict, List
 
 from gi.repository import Gtk
 
+from ..constants import ALL_NOTES_NOTEBOOK
+
 if TYPE_CHECKING:
     from .view_controller import ViewController
 
@@ -37,7 +39,7 @@ class NotebookList:
     def display_notebooks(self, notebooks: List[str]) -> None:
         self.store_notebooks.clear()
 
-        self.store_notebooks.append(['All Notes'])
+        self.store_notebooks.append([ALL_NOTES_NOTEBOOK])
 
         for notebook in notebooks:
             self.store_notebooks.append([notebook])
