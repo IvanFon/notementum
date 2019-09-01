@@ -24,6 +24,10 @@ if TYPE_CHECKING:
     from .view_controller import ViewController
 
 
+FONT_WEIGHT_NORMAL = 400
+FONT_WEIGHT_BOLD = 600
+
+
 class AssignNotebookDialog:
     def __init__(self,
                  controller: 'ViewController',
@@ -45,12 +49,13 @@ class AssignNotebookDialog:
         self.store_assign_notebooks.clear()
 
         self.none_notebook_iter = self.store_assign_notebooks.append([
-            'None (All Notes)', False])
+            'None (All Notes)', False, FONT_WEIGHT_BOLD])
         self.new_notebook_iter = self.store_assign_notebooks.append([
-            '<New notebook>', True])
+            '<New notebook>', True, FONT_WEIGHT_BOLD])
 
         for notebook in notebooks:
-            self.store_assign_notebooks.append([notebook, False])
+            self.store_assign_notebooks.append([
+                notebook, False, FONT_WEIGHT_NORMAL])
 
         res = self.dialog_assign_notebook.run()
         self.dialog_assign_notebook.hide()

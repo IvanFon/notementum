@@ -23,6 +23,8 @@
       <column type="gchararray"/>
       <!-- column-name editable -->
       <column type="gboolean"/>
+      <!-- column-name font_weight -->
+      <column type="guint"/>
     </columns>
   </object>
   <object class="GtkDialog" id="dialog_assign_notebook">
@@ -101,6 +103,7 @@
                   <attributes>
                     <attribute name="editable">1</attribute>
                     <attribute name="text">0</attribute>
+                    <attribute name="weight">2</attribute>
                   </attributes>
                 </child>
               </object>
