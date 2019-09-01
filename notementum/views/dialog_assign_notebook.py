@@ -44,6 +44,8 @@ class AssignNotebookDialog:
     def show(self, notebooks: List[str]) -> Tuple[Gtk.ResponseType, str]:
         self.store_assign_notebooks.clear()
 
+        self.none_notebook_iter = self.store_assign_notebooks.append([
+            'None (All Notes)', False])
         self.new_notebook_iter = self.store_assign_notebooks.append([
             '<New notebook>', True])
 

@@ -138,6 +138,8 @@ class ViewController:
         res, notebook = self.assign_notebook_dialog.show(
             self.model.get_notebooks())
         if res == Gtk.ResponseType.APPLY:
+            if notebook == 'None (All Notes)':
+                notebook = None
             self.model.assign_notebook(self.model.selected_note, notebook)
             self.refresh_notebooks()
             self.notebook_list.select_notebook(notebook)
