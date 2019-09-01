@@ -32,6 +32,8 @@ class AssignNotebookDialog:
 
         self.dialog_assign_notebook = builder.get_object(
             'dialog_assign_notebook')
+        self.btn_assign_notebook_apply = builder.get_object(
+            'btn_assign_notebook_apply')
         self.store_assign_notebooks = builder.get_object(
             'store_assign_notebooks')
         self.tree_selection_assign_notebook = builder.get_object(
@@ -70,3 +72,4 @@ class AssignNotebookDialog:
         self.store_assign_notebooks.insert_after(self.new_notebook_iter,
                                                  [new_text, False])
         self.tree_selection_assign_notebook.select_path(int(path) + 1)
+        self.btn_assign_notebook_apply.grab_focus()
