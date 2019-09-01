@@ -62,6 +62,9 @@ class AssignNotebookDialog:
         return {
             'on_tree_cell_assign_notebook_name_edited':
                 self.on_tree_cell_assign_notebook_name_edited,
+            'on_tree_assign_notebook_row_activated': (
+                lambda *a: self.btn_assign_notebook_apply.clicked()
+            ),
         }
 
     def on_tree_cell_assign_notebook_name_edited(self,

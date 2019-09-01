@@ -82,11 +82,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTreeView">
+          <object class="GtkTreeView" id="tree_assign_notebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="model">store_assign_notebooks</property>
             <property name="headers_visible">False</property>
+            <signal name="row-activated" handler="on_tree_assign_notebook_row_activated" swapped="no"/>
             <child internal-child="selection">
               <object class="GtkTreeSelection" id="tree_selection_assign_notebook"/>
             </child>
