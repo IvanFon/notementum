@@ -10,8 +10,11 @@ Inspired by apps like Notable, Notational Velocity, and Typora.
 
 Notementum depends on:
 
-  - Python 3
-  - Gtk+ 3.20
+  - Python 3.7+
+  - Gtk+ 3.20+
+  - gobject-introspection
+  - mistletoe
+  - Pygments
   - PyGObject
   - WebKitGTK 2
   - GtkSourceView 4
