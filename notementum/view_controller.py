@@ -82,7 +82,7 @@ class ViewController:
 
     def get_builder(self) -> Gtk.Builder:
         builder = Gtk.Builder()
-        builder.add_from_file(resource_filename('notementum', 'res/notes.ui'))
+        builder.add_from_file(resource_filename('notementum', 'res/notementum.ui'))
         return builder
 
     def start(self) -> None:
